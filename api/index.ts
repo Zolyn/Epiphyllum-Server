@@ -40,3 +40,5 @@ app.get('/', async (req, res) => {
 app.listen(3000, () => {
     Logger.info('Listening on http://localhost:3000');
 });
+
+module.exports = app;
