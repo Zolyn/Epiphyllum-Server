@@ -4,7 +4,6 @@
         "strict": true,
         "module": "CommonJS",
         "tsBuildInfoFile": "./dist/buildFile.tsbuildinfo",
-        "sourceMap": true,
         "skipLibCheck": true,
         "newLine": "lf",
         "experimentalDecorators": true,
