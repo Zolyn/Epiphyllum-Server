@@ -8,7 +8,7 @@ interface Response {
     data?: EpiphyllumEntryReturn;
 }
 
-const index = express();
+const app = express();
 const cache = apicache.options({
     headers: {
         'cache-control': 'no-cache',
@@ -16,9 +16,9 @@ const cache = apicache.options({
     debug: true,
 }).middleware;
 
-index.use(cache('1 minute'));
+app.use(cache('1 minute'));
 
-index.get('/', async (req, res) => {
+app.get('/', async (req, res) => {
     const [err, val] = await awaitHelper(EpiphyllumEntry());
 
     const responseObj: Response = {
@@ -37,8 +37,8 @@ index.get('/', async (req, res) => {
     res.status(200).json(responseObj);
 });
 
-index.listen(3000, () => {
+app.listen(3000, () => {
     Logger.info('Listening on http://localhost:3000');
 });
 
-module.exports = index;
+export default app;
