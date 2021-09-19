@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "incremental": true,
+        "strict": true,
+        "module": "CommonJS",
+        "tsBuildInfoFile": "./dist/buildFile.tsbuildinfo",
+        "sourceMap": true,
+        "skipLibCheck": true,
+        "newLine": "lf",
+        "experimentalDecorators": true,
+        "target": "ES6",
+        "outDir": "./dist",
+        "moduleResolution": "Node",
+        "noFallthroughCasesInSwitch": true,
+        "esModuleInterop": false,
+        "listEmittedFiles": true
+    },
+    "include": ["./api/**/*.ts"]
+}
