@@ -1,4 +1,5 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
+import express from 'express';
+import apicache from 'apicache';
 import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
 import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
 
@@ -7,20 +8,35 @@ interface Response {
     data?: EpiphyllumEntryReturn;
 }
 
-export default async function (req: VercelRequest, res: VercelResponse): Promise<void> {
+const app = express();
+const cache = apicache.options({
+    headers: {
+        'cache-control': 'no-cache',
+    },
+    debug: true,
+}).middleware;
+
+app.use(cache('1 minute'));
+
+app.get('/', async (req, res) => {
     const [err, val] = await awaitHelper(EpiphyllumEntry());
 
-    const response: Response = {
+    const responseObj: Response = {
         status: 200,
     };
 
     if (!val) {
         Logger.err(err);
-        response.status = 500;
-        res.json(response);
+        responseObj.status = 500;
+        res.status(500).json(responseObj);
         return;
     }
 
-    response.data = val;
-    res.json(response);
-}
+    responseObj.data = val;
+
+    res.status(200).json(responseObj);
+});
+
+app.listen(3000, () => {
+    Logger.info('Listening on http://localhost:3000');
+});

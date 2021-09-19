@@ -1,3 +1,4 @@
+import { whiteBright as chalk } from 'chalk';
 import { extname } from 'path';
 
 interface FileMeta {
@@ -27,32 +28,6 @@ type FileMetaList = FileMeta[];
 interface DirectoryMap {
     [path: string]: DirectoryMeta;
 }
-
-interface BreadCrumbItem {
-    text: string;
-    disabled: boolean;
-    href: string;
-}
-
-type BreadCrumbs = BreadCrumbItem[];
-
-type SortMode = 'normal' | 'time-asc' | 'time-desc' | 'size-asc' | 'size-desc' | 'name-asc' | 'name-desc';
-
-interface GroupItem {
-    title: string;
-    mode: SortMode;
-    icon: string;
-}
-
-interface Group {
-    title: string;
-    prependIcon: string;
-    items: GroupItem[];
-}
-
-type ColorScheme = 'system' | 'light' | 'dark';
-
-type ViewMode = 'list' | 'table';
 
 /**
  * await帮助函数，帮助捕获异常
@@ -116,9 +91,9 @@ interface Logger {
 }
 
 const LiteLogger: Logger = {
-    info: (msg) => console.log(msg),
-    err: (msg) => console.error(msg),
-    debug: (msg) => console.log(msg),
+    err: (msg) => console.log(`${chalk.bgRed(' ERROR ')} ${msg}`),
+    info: (msg) => console.log(`${chalk.bgBlue(' INFO ')} ${msg}`),
+    debug: (msg) => console.log(`${chalk.bgGray('DEBUG')}`, msg),
     throw: (msg) => {
         throw new Error(msg);
     },
@@ -224,13 +199,6 @@ export {
     DirectoryMeta,
     FileMetaList,
     DirectoryMap,
-    BreadCrumbItem,
-    BreadCrumbs,
-    Group,
-    GroupItem,
-    SortMode,
-    ColorScheme,
-    ViewMode,
     transformTime,
     transformBytes,
     getFileTypeAndIcon,
