@@ -7,6 +7,8 @@
     "author": "Zorin <zorin1477@gmail.com>",
     "main": "index.js",
     "scripts": {
+        "build": "tsc",
+        "start": "node ./dist/api/index.js",
         "rel:ma": "standard-version -r major -n",
         "rel:mi": "standard-version -r minor -n",
         "rel:pa": "standard-version -r patch -n",
