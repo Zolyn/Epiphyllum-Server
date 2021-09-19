@@ -1,10 +1,9 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { awaitHelper } from '../epiphyllum/utils';
+import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
 import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
 
 interface Response {
     status: number;
-    errorMsg: string;
     data?: EpiphyllumEntryReturn;
 }
 
@@ -13,12 +12,11 @@ export default async function (req: VercelRequest, res: VercelResponse): Promise
 
     const response: Response = {
         status: 200,
-        errorMsg: '',
     };
 
     if (!val) {
+        Logger.err(err);
         response.status = 500;
-        response.errorMsg = err;
         res.json(response);
         return;
     }
