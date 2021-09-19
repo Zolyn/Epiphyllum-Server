@@ -8,7 +8,7 @@ interface Response {
     data?: EpiphyllumEntryReturn;
 }
 
-const app = express();
+export const app = express();
 const cache = apicache.options({
     headers: {
         'cache-control': 'no-cache',
@@ -40,5 +40,3 @@ app.get('/', async (req, res) => {
 app.listen(3000, () => {
     Logger.info('Listening on http://localhost:3000');
 });
-
-export default app;
