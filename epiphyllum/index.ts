@@ -8,7 +8,7 @@ interface EpiphyllumEntryReturn {
 
 async function EpiphyllumEntry(): Promise<EpiphyllumEntryReturn> {
     // @ts-ignore
-    const [importErr, module] = await awaitHelper(import('../../epiphyllum.config'));
+    const [importErr, module] = await awaitHelper(import('../epiphyllum.config'));
 
     if (!module) {
         throw E(importErr);

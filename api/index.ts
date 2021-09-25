@@ -1,7 +1,7 @@
 import express from 'express';
 import apicache from 'apicache';
-import { awaitHelper, LiteLogger as Logger } from '../src/epiphyllum/utils';
-import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../src/epiphyllum';
+import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
+import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
 
 interface Response {
     status: number;
@@ -16,9 +16,17 @@ const cache = apicache.options({
     debug: true,
 }).middleware;
 
-app.use(cache('1 minute'));
+// @ts-ignore
+const onlyCache200 = (req, res) => res.statusCode === 200;
+
+app.use(cache('1 minute', onlyCache200));
 
 app.get('/', async (req, res) => {
+    if (!req.query.ip) {
+        res.redirect(`/?ip=${req.ip}`);
+        return;
+    }
+
     const [err, val] = await awaitHelper(EpiphyllumEntry());
 
     const responseObj: Response = {
@@ -33,7 +41,6 @@ app.get('/', async (req, res) => {
     }
 
     responseObj.data = val;
-
     res.status(200).json(responseObj);
 });
 
