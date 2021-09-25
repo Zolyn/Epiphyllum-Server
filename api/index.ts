@@ -1,7 +1,7 @@
 import express from 'express';
 import apicache from 'apicache';
-import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
-import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
+import { awaitHelper, LiteLogger as Logger } from '../src/epiphyllum/utils';
+import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../src/epiphyllum';
 
 interface Response {
     status: number;
