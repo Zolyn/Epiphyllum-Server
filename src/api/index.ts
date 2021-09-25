@@ -21,9 +21,9 @@ const onlyCache200 = (req, res) => res.statusCode === 200;
 
 app.use(cache('1 minute', onlyCache200));
 
-app.get('/', async (req, res) => {
+app.get('/api', async (req, res) => {
     if (!req.query.ip) {
-        res.redirect(`/?ip=${req.ip}`);
+        res.redirect(`/api?ip=${req.ip}`);
         return;
     }
 

@@ -26,9 +26,9 @@ const cache = apicache_1.default.options({
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
 app.use(cache('1 minute', onlyCache200));
-app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.query.ip) {
-        res.redirect(`/?ip=${req.ip}`);
+        res.redirect(`/api?ip=${req.ip}`);
         return;
     }
     const [err, val] = yield (0, utils_1.awaitHelper)((0, epiphyllum_1.EpiphyllumEntry)());
