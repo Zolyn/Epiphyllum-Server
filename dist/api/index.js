@@ -12,12 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const apicache_1 = __importDefault(require("apicache"));
 const utils_1 = require("../epiphyllum/utils");
 const epiphyllum_1 = require("../epiphyllum");
-exports.app = (0, express_1.default)();
+const app = (0, express_1.default)();
 const cache = apicache_1.default.options({
     headers: {
         'cache-control': 'no-cache',
@@ -26,8 +25,8 @@ const cache = apicache_1.default.options({
 }).middleware;
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
-exports.app.use(cache('1 minute', onlyCache200));
-exports.app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.use(cache('1 minute', onlyCache200));
+app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.query.ip) {
         res.redirect(`/?ip=${req.ip}`);
         return;
@@ -45,6 +44,7 @@ exports.app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     responseObj.data = val;
     res.status(200).json(responseObj);
 }));
-exports.app.listen(3000, () => {
+app.listen(3000, () => {
     utils_1.LiteLogger.info('Listening on http://localhost:3000');
 });
+module.exports = app;
