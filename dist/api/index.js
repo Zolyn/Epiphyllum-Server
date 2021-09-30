@@ -15,34 +15,70 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const apicache_1 = __importDefault(require("apicache"));
 const utils_1 = require("../epiphyllum/utils");
-const epiphyllum_1 = require("../epiphyllum");
 const app = (0, express_1.default)();
 const cache = apicache_1.default.options({
     headers: {
         'cache-control': 'no-cache',
     },
-    debug: true,
+    debug: false,
 }).middleware;
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
-app.use(cache('1 minute', onlyCache200));
+// app.use(cache('1 minute', onlyCache200));
+let requests = 0;
 app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.query.ip) {
-        res.redirect(`/api?ip=${req.ip}`);
-        return;
+    requests++;
+    console.log(req.query.id);
+    if (requests > 20) {
+        requests--;
+        res.status(200).json({
+            msg: `[${req.query.id}]Limited.`,
+        });
     }
-    const [err, val] = yield (0, utils_1.awaitHelper)((0, epiphyllum_1.EpiphyllumEntry)());
-    const responseObj = {
-        status: 200,
-    };
-    if (!val) {
-        utils_1.LiteLogger.err(err);
-        responseObj.status = 500;
-        res.status(500).json(responseObj);
-        return;
+    else {
+        yield new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 3000);
+        });
+        requests--;
+        res.status(200).json({
+            msg: `[${req.query.id}]Completed.`,
+        });
     }
-    responseObj.data = val;
-    res.status(200).json(responseObj);
+    // const responseData: Response = {
+    //     status: 200,
+    // };
+    //
+    // if (requests === 10) {
+    //     responseData.status = 502;
+    //     res.status(502).json(responseData);
+    //     return;
+    // }
+    //
+    // if (!req.query.ip) {
+    //     responseData.status = 403;
+    //     res.status(403).json(responseData);
+    //     return;
+    // }
+    //
+    // requests += 1;
+    // const [err, val] = await awaitHelper(
+    //     new Promise<void>((resolve) => {
+    //         setTimeout(() => resolve(), 2000);
+    //     }),
+    // );
+    //
+    // requests -= 1;
+    // if (!val) {
+    //     Logger.err(err);
+    //     responseData.status = 500;
+    //     res.status(500).json(responseData);
+    //     return;
+    // }
+    //
+    // responseData.data = val;
+    // res.status(200).json(responseData);
 }));
 app.listen(3000, () => {
     utils_1.LiteLogger.info('Listening on http://localhost:3000');
