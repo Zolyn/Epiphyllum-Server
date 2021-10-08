@@ -1,5 +1,6 @@
 import express from 'express';
 import apicache from 'apicache';
+import moment from 'moment';
 import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
 import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
 
@@ -19,29 +20,12 @@ const cache = apicache.options({
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
 
-// app.use(cache('1 minute', onlyCache200));
-
-let requests = 0;
+app.use(cache('1 minute', onlyCache200));
 
 app.get('/api', async (req, res) => {
-    requests++;
-    console.log(req.query.id);
-    if (requests > 20) {
-        requests--;
-        res.status(200).json({
-            msg: `[${req.query.id}]Limited.`,
-        });
-    } else {
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, 3000);
-        });
-        requests--;
-        res.status(200).json({
-            msg: `[${req.query.id}]Completed.`,
-        });
-    }
+    res.json({
+        date: moment().format(),
+    });
     // const responseData: Response = {
     //     status: 200,
     // };
