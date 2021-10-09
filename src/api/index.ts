@@ -2,7 +2,6 @@ import express from 'express';
 import apicache from 'apicache';
 import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
 import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
-import RequestLimiter from '../epiphyllum/middleware/limiter';
 
 interface Response {
     status: number;
@@ -17,10 +16,6 @@ const cache = apicache.options({
     },
     debug: false,
 }).middleware;
-
-const limiter = new RequestLimiter().limiter;
-
-app.use(limiter);
 
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;

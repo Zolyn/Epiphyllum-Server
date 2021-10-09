@@ -16,7 +16,6 @@ const express_1 = __importDefault(require("express"));
 const apicache_1 = __importDefault(require("apicache"));
 const utils_1 = require("../epiphyllum/utils");
 const epiphyllum_1 = require("../epiphyllum");
-const limiter_1 = __importDefault(require("../epiphyllum/middleware/limiter"));
 const app = (0, express_1.default)();
 const cache = apicache_1.default.options({
     headers: {
@@ -24,8 +23,6 @@ const cache = apicache_1.default.options({
     },
     debug: false,
 }).middleware;
-const limiter = new limiter_1.default().limiter;
-app.use(limiter);
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
 app.use(cache('1 minute', onlyCache200));
