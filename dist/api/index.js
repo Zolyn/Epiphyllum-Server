@@ -25,7 +25,7 @@ const cache = apicache_1.default.options({
 }).middleware;
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
-app.use(cache('1 minute', onlyCache200));
+app.use(cache('2 minutes', onlyCache200));
 app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const responseData = {
         status: 200,
