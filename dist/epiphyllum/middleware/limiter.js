@@ -38,7 +38,7 @@ class RequestLimiter {
                 });
                 return;
             }
-            next();
+            res.json(this);
         };
         if (frequency) {
             this.setFrequency(frequency);

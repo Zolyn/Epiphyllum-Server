@@ -59,7 +59,7 @@ class RequestLimiter {
             return;
         }
 
-        next();
+        res.json(this);
     };
 
     private addCount(unit: TimeUnits, time: string): number {
