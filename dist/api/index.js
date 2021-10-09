@@ -14,8 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const apicache_1 = __importDefault(require("apicache"));
-const moment_1 = __importDefault(require("moment"));
 const utils_1 = require("../epiphyllum/utils");
+const epiphyllum_1 = require("../epiphyllum");
+const limiter_1 = __importDefault(require("../epiphyllum/middleware/limiter"));
 const app = (0, express_1.default)();
 const cache = apicache_1.default.options({
     headers: {
@@ -23,46 +24,32 @@ const cache = apicache_1.default.options({
     },
     debug: false,
 }).middleware;
+const limiter = new limiter_1.default().limiter;
+app.use(limiter);
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
 app.use(cache('1 minute', onlyCache200));
 app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.json({
-        date: (0, moment_1.default)().format(),
-    });
-    // const responseData: Response = {
-    //     status: 200,
-    // };
-    //
-    // if (requests === 10) {
-    //     responseData.status = 502;
-    //     res.status(502).json(responseData);
-    //     return;
-    // }
-    //
-    // if (!req.query.ip) {
-    //     responseData.status = 403;
-    //     res.status(403).json(responseData);
-    //     return;
-    // }
-    //
-    // requests += 1;
-    // const [err, val] = await awaitHelper(
-    //     new Promise<void>((resolve) => {
-    //         setTimeout(() => resolve(), 2000);
-    //     }),
-    // );
-    //
-    // requests -= 1;
-    // if (!val) {
-    //     Logger.err(err);
-    //     responseData.status = 500;
-    //     res.status(500).json(responseData);
-    //     return;
-    // }
-    //
-    // responseData.data = val;
-    // res.status(200).json(responseData);
+    const responseData = {
+        status: 200,
+        msg: 'Done.',
+    };
+    if (!req.query.ip) {
+        responseData.status = 403;
+        responseData.msg = 'Missing parameter.';
+        res.status(403).json(responseData);
+        return;
+    }
+    const [err, val] = yield (0, utils_1.awaitHelper)((0, epiphyllum_1.EpiphyllumEntry)());
+    if (!val) {
+        utils_1.LiteLogger.err(err);
+        responseData.status = 500;
+        responseData.msg = 'Internal error.';
+        res.status(500).json(responseData);
+        return;
+    }
+    responseData.data = val;
+    res.status(200).json(responseData);
 }));
 app.listen(3000, () => {
     utils_1.LiteLogger.info('Listening on http://localhost:3000');

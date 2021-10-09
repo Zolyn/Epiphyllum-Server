@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as moment from 'moment';
+import moment from 'moment';
 
 interface FrequencyMap {
     minute: number;
@@ -16,7 +16,13 @@ interface RequestTimeRecord {
 type RequestRecord = Record<TimeUnits, RequestTimeRecord>;
 
 class RequestLimiter {
-    private readonly timeUnits: TimeUnits[] = ['minute', 'hour', 'day'];
+    private readonly timeUnits: TimeUnits[] = ['day', 'hour', 'minute'];
+    private readonly timeFormat: Record<TimeUnits, string> = {
+        minute: 'DD HH:mm',
+        hour: 'DD HH',
+        day: 'DD',
+    };
+
     private frequencyMap: FrequencyMap = {
         minute: 40,
         hour: 1500,
@@ -35,39 +41,42 @@ class RequestLimiter {
         }
     }
 
-    public limiter(req: Request, res: Response, next: NextFunction): void {}
+    public limiter = (_: Request, res: Response, next: NextFunction): void => {
+        const currentTime = moment().add(8, 'h');
+        let isLimited = false;
+        this.timeUnits.map((val): void => {
+            const formattedTime = currentTime.format(`YYYY-MM-${this.timeFormat[val]}`);
+            const currentCount = this.addCount(val, formattedTime);
+            if (currentCount > this.frequencyMap[val]) {
+                isLimited = true;
+            }
+        });
+
+        if (isLimited) {
+            res.status(503).json({
+                error: 'Limited',
+            });
+            return;
+        }
+
+        next();
+    };
+
+    private addCount(unit: TimeUnits, time: string): number {
+        let value: number = this.requestRecord[unit][time] ?? 0;
+        this.requestRecord[unit][time] = ++value;
+        return value;
+    }
 
     private setFrequency(frequencyArr: string[]): void {
-        frequencyArr.map((val): undefined => {
+        frequencyArr.map((val): void => {
             const frequencyClip = val.split(' ') as [string, string, TimeUnits];
             const frequency = parseInt(frequencyClip[0], 10);
             if (frequency > 0 && frequencyClip[1] === 'per' && this.timeUnits.includes(frequencyClip[2])) {
                 this.frequencyMap[frequencyClip[2]] = frequency;
             }
-
-            return undefined;
         });
     }
 }
 
-function limiter(req: Request, res: Response, next: NextFunction): void {
-    timeUnits.map((val): undefined => {
-        const requestCount = requestRecord.get(val) ?? 0;
-        requestRecord.set(val, requestCount + 1);
-        return undefined;
-    });
-
-    console.log('Request received.');
-
-    timeUnits.reverse().map((val): undefined => {
-        console.log(val);
-        const requestCount = requestRecord.get(val) as number;
-        if (requestCount >= 10) {
-            res.status(400).json({
-                code: 400,
-            });
-        }
-        next();
-        return undefined;
-    });
-}
+export default RequestLimiter;

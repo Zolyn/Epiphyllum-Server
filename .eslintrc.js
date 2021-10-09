@@ -8,5 +8,7 @@ module.exports = {
     globals: {
         NodeJS: true,
     },
-    rules: {},
+    rules: {
+        'array-callback-return': 'off',
+    },
 };

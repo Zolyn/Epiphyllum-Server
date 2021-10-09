@@ -1,8 +1,17 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment_1 = __importDefault(require("moment"));
 class RequestLimiter {
     constructor(frequency) {
-        this.timeUnits = ['minute', 'hour', 'day'];
+        this.timeUnits = ['day', 'hour', 'minute'];
+        this.timeFormat = {
+            minute: 'DD HH:mm',
+            hour: 'DD HH',
+            day: 'DD',
+        };
         this.frequencyMap = {
             minute: 40,
             hour: 1500,
@@ -13,11 +22,34 @@ class RequestLimiter {
             hour: {},
             day: {},
         };
+        this.limiter = (_, res, next) => {
+            const currentTime = (0, moment_1.default)().add(8, 'h');
+            let isLimited = false;
+            this.timeUnits.map((val) => {
+                const formattedTime = currentTime.format(`YYYY-MM-${this.timeFormat[val]}`);
+                const currentCount = this.addCount(val, formattedTime);
+                if (currentCount > this.frequencyMap[val]) {
+                    isLimited = true;
+                }
+            });
+            if (isLimited) {
+                res.status(503).json({
+                    error: 'Limited',
+                });
+                return;
+            }
+            next();
+        };
         if (frequency) {
             this.setFrequency(frequency);
         }
     }
-    limiter(req, res, next) { }
+    addCount(unit, time) {
+        var _a;
+        let value = (_a = this.requestRecord[unit][time]) !== null && _a !== void 0 ? _a : 0;
+        this.requestRecord[unit][time] = ++value;
+        return value;
+    }
     setFrequency(frequencyArr) {
         frequencyArr.map((val) => {
             const frequencyClip = val.split(' ');
@@ -25,27 +57,7 @@ class RequestLimiter {
             if (frequency > 0 && frequencyClip[1] === 'per' && this.timeUnits.includes(frequencyClip[2])) {
                 this.frequencyMap[frequencyClip[2]] = frequency;
             }
-            return undefined;
         });
     }
 }
-function limiter(req, res, next) {
-    timeUnits.map((val) => {
-        var _a;
-        const requestCount = (_a = requestRecord.get(val)) !== null && _a !== void 0 ? _a : 0;
-        requestRecord.set(val, requestCount + 1);
-        return undefined;
-    });
-    console.log('Request received.');
-    timeUnits.reverse().map((val) => {
-        console.log(val);
-        const requestCount = requestRecord.get(val);
-        if (requestCount >= 10) {
-            res.status(400).json({
-                code: 400,
-            });
-        }
-        next();
-        return undefined;
-    });
-}
+exports.default = RequestLimiter;

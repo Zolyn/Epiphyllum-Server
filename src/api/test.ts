@@ -1,6 +1,7 @@
 import express from 'express';
 import apicache from 'apicache';
-import * as moment from 'moment';
+import moment from 'moment';
+import RequestLimiter from '../epiphyllum/middleware/limiter';
 
 const app = express();
 
@@ -14,24 +15,15 @@ const cache = apicache.options({
     debug: false,
 }).middleware;
 
-app.use(cache('1 minute', onlyCache200));
+const limiter = new RequestLimiter(['3 per minute']).limiter;
+app.use(limiter);
+// app.use(cache('1 minute', onlyCache200));
 
-app.get(
-    '/a',
-    async (req, res, next) => {
-        console.log('1');
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                resolve();
-            }, 3000);
-        });
-        next();
-    },
-    (req, res) => {
-        console.log('2');
-        res.send('AAA');
-    },
-);
+app.get('/api', (req, res) => {
+    const date = moment();
+    console.log('Method executed.');
+    res.send(moment().format('YYYY-MM-DD HH:mm'));
+});
 
 app.use((req, res) => {
     res.status(404).send('Error: 404 Not Found');
