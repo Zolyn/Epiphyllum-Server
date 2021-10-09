@@ -20,7 +20,7 @@ const cache = apicache.options({
 // @ts-ignore
 const onlyCache200 = (req, res) => res.statusCode === 200;
 
-app.use(cache('1 minute', onlyCache200));
+app.use(cache('2 minutes', onlyCache200));
 
 app.get('/api', async (req, res) => {
     const responseData: Response = {
