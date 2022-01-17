@@ -39,7 +39,7 @@ app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     const [err, val] = yield (0, utils_1.awaitHelper)((0, epiphyllum_1.EpiphyllumEntry)());
     if (!val) {
-        utils_1.LiteLogger.err(err);
+        console.error(err);
         responseData.status = 500;
         responseData.msg = 'Internal error.';
         res.status(500).json(responseData);
@@ -49,6 +49,6 @@ app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(200).json(req.rawHeaders);
 }));
 app.listen(3000, () => {
-    utils_1.LiteLogger.info('Listening on http://localhost:3000');
+    console.info('Listening on http://localhost:3000');
 });
 module.exports = app;
