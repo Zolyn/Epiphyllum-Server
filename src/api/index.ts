@@ -46,7 +46,7 @@ app.get('/api', async (req, res) => {
     }
 
     responseData.data = val;
-    res.status(200).json(req.rawHeaders);
+    res.status(200).json(req.headers['x-real-ip']);
 });
 
 app.listen(3000, () => {
