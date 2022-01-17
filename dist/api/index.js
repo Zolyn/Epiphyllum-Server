@@ -46,7 +46,7 @@ app.get('/api', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     responseData.data = val;
-    res.status(200).json(responseData);
+    res.status(200).json(req.rawHeaders);
 }));
 app.listen(3000, () => {
     utils_1.LiteLogger.info('Listening on http://localhost:3000');

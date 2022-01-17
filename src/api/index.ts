@@ -46,7 +46,7 @@ app.get('/api', async (req, res) => {
     }
 
     responseData.data = val;
-    res.status(200).json(responseData);
+    res.status(200).json(req.rawHeaders);
 });
 
 app.listen(3000, () => {
