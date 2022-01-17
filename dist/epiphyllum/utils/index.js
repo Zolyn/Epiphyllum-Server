@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TE = exports.E = exports.getFileTypeAndIcon = exports.transformBytes = exports.transformTime = exports.LiteLogger = exports.awaitHelper = void 0;
-const chalk_1 = require("chalk");
+exports.TE = exports.E = exports.getFileTypeAndIcon = exports.transformBytes = exports.transformTime = exports.awaitHelper = void 0;
 const path_1 = require("path");
 /**
  * await帮助函数，帮助捕获异常
@@ -51,15 +50,14 @@ const E = (err) => new Error(err);
 exports.E = E;
 const TE = (err) => new TypeError(err);
 exports.TE = TE;
-const LiteLogger = {
-    err: (msg) => console.log(`${chalk_1.whiteBright.bgRed(' ERROR ')} ${msg}`),
-    info: (msg) => console.log(`${chalk_1.whiteBright.bgBlue(' INFO ')} ${msg}`),
-    debug: (msg) => console.log(`${chalk_1.whiteBright.bgGray('DEBUG')}`, msg),
-    throw: (msg) => {
-        throw new Error(msg);
-    },
-};
-exports.LiteLogger = LiteLogger;
+// const LiteLogger: Logger = {
+//     err: (msg) => console.log(`${chalk.bgRed(' ERROR ')} ${msg}`),
+//     info: (msg) => console.log(`${chalk.bgBlue(' INFO ')} ${msg}`),
+//     debug: (msg) => console.log(`${chalk.bgGray('DEBUG')}`, msg),
+//     throw: (msg) => {
+//         throw new Error(msg);
+//     },
+// };
 const fileTypeMap = [
     {
         suffix: ['txt', 'log', 'out'],

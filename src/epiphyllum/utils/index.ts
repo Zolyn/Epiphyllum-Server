@@ -1,4 +1,3 @@
-import { whiteBright as chalk } from 'chalk';
 import { extname } from 'path';
 
 interface FileMeta {
@@ -90,14 +89,14 @@ interface Logger {
     throw: (msg: string) => never;
 }
 
-const LiteLogger: Logger = {
-    err: (msg) => console.log(`${chalk.bgRed(' ERROR ')} ${msg}`),
-    info: (msg) => console.log(`${chalk.bgBlue(' INFO ')} ${msg}`),
-    debug: (msg) => console.log(`${chalk.bgGray('DEBUG')}`, msg),
-    throw: (msg) => {
-        throw new Error(msg);
-    },
-};
+// const LiteLogger: Logger = {
+//     err: (msg) => console.log(`${chalk.bgRed(' ERROR ')} ${msg}`),
+//     info: (msg) => console.log(`${chalk.bgBlue(' INFO ')} ${msg}`),
+//     debug: (msg) => console.log(`${chalk.bgGray('DEBUG')}`, msg),
+//     throw: (msg) => {
+//         throw new Error(msg);
+//     },
+// };
 
 const fileTypeMap: FileType[] = [
     {
@@ -194,7 +193,7 @@ function getFileTypeAndIcon(name: string): FileType {
 
 export {
     awaitHelper,
-    LiteLogger,
+    // LiteLogger,
     FileMeta,
     DirectoryMeta,
     FileMetaList,
