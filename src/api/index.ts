@@ -1,6 +1,6 @@
 import express from 'express';
 import apicache from 'apicache';
-import { awaitHelper, LiteLogger as Logger } from '../epiphyllum/utils';
+import { awaitHelper } from '../epiphyllum/utils';
 import { EpiphyllumEntry, EpiphyllumEntryReturn } from '../epiphyllum';
 
 interface Response {
@@ -38,7 +38,7 @@ app.get('/api', async (req, res) => {
     const [err, val] = await awaitHelper(EpiphyllumEntry());
 
     if (!val) {
-        Logger.err(err);
+        console.error(err);
         responseData.status = 500;
         responseData.msg = 'Internal error.';
         res.status(500).json(responseData);
@@ -50,7 +50,7 @@ app.get('/api', async (req, res) => {
 });
 
 app.listen(3000, () => {
-    Logger.info('Listening on http://localhost:3000');
+    console.info('Listening on http://localhost:3000');
 });
 
 module.exports = app;
