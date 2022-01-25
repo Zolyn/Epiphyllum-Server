@@ -7,7 +7,7 @@
     "author": "Zorin <zorin1477@gmail.com>",
     "main": "index.js",
     "scripts": {
-        "build": "rm -rf ./dist && tsc && node ./script/build.js",
+        "build": "rm -rf ./dist && tsc",
         "dev": "yarn build && node ./dist/api/index.js",
         "prepare": "husky install",
         "prerel:a": "standard-version -p alpha -n",
